@@ -4,13 +4,13 @@ local button = require('Button')
 
 math.randomseed(os.time())
 
-local player      = {
+local player       = {
   radius = 20,
   x = 30,
   y = 30,
 }
 
-local game        = {
+local game         = {
   dificulty = 1,
   state = {
     menu = true,
@@ -20,22 +20,27 @@ local game        = {
   }
 }
 
-local buttons     = {
+local buttons      = {
   menu_state = {}
 }
 
-local enemies     = {}
+local enemies      = {}
 
-love.load         = function()
+local startNewGame = function()
+  game.state['menu'] = false
+  game.state['running'] = true
+end
+
+love.load          = function()
   love.mouse.setVisible(false)
   table.insert(enemies, 1, enemy())
 
-  buttons.menu_state.play_game = button('Play Game', nil, nil, 120, 40)
+  buttons.menu_state.play_game = button('Play Game', startNewGame, nil, 120, 40)
   buttons.menu_state.settings = button('Settings', nil, nil, 120, 40)
   buttons.menu_state.exit_game = button('Exit Game', love.event.quit, nil, 120, 40)
 end
 
-love.mousepressed = function(x, y, btn)
+love.mousepressed  = function(x, y, btn)
   if game.state['running'] then return end
   if game.state['menu'] then
     if btn == 1 then
@@ -46,14 +51,16 @@ love.mousepressed = function(x, y, btn)
   end
 end
 
-love.update       = function()
+love.update        = function()
   player.x, player.y = love.mouse.getPosition()
-  for i = 1, #enemies, 1 do
-    enemies[i]:move(player.x, player.y)
+  if game.state['running'] then
+    for i = 1, #enemies, 1 do
+      enemies[i]:move(player.x, player.y)
+    end
   end
 end
 
-love.draw         = function()
+love.draw          = function()
   love.graphics.printf(love.timer.getFPS(), love.graphics.newFont(14), 10,
     love.graphics.getHeight() - 30, love.graphics.getWidth())
 
