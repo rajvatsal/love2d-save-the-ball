@@ -13,7 +13,7 @@ local Enemy = function()
     _y = math.random(_radius, love.graphics.getHeight())
   elseif _dice == 3 then
     _x = math.random(_radius, love.graphics.getWidth())
-    _y = love.graphics.getHeight + _radius * 4
+    _y = love.graphics.getHeight() + _radius * 4
   else
     _x = -_radius * 4
     _y = math.random(_radius, love.graphics.getHeight())
