@@ -67,6 +67,9 @@ love.update           = function(dt)
   if game.state['running'] then
     for i = 1, #enemies, 1 do
       enemies[i]:move(player.x, player.y)
+      if enemies[i]:checkTouched(player.x, player.y, player.radius) then
+        changeGameState('menu')
+      end
     end
     game.points = game.points + dt
   end
