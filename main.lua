@@ -17,7 +17,9 @@ local game         = {
     running = false,
     pause = false,
     ended = false,
-  }
+  },
+  points = 0,
+  levels = { 10, 20, 30, 40 },
 }
 
 local buttons      = {
@@ -29,6 +31,9 @@ local enemies      = {}
 local startNewGame = function()
   game.state['menu'] = false
   game.state['running'] = true
+  game.points = 0
+
+  enemies = { enemy(1) }
 end
 
 love.load          = function()
@@ -51,12 +56,13 @@ love.mousepressed  = function(x, y, btn)
   end
 end
 
-love.update        = function()
+love.update        = function(dt)
   player.x, player.y = love.mouse.getPosition()
   if game.state['running'] then
     for i = 1, #enemies, 1 do
       enemies[i]:move(player.x, player.y)
     end
+    game.points = game.points + dt
   end
 end
 
@@ -65,6 +71,9 @@ love.draw          = function()
     love.graphics.getHeight() - 30, love.graphics.getWidth())
 
   if game.state['running'] then
+    love.graphics.printf(math.floor(game.points), love.graphics.newFont(24), 0, love.graphics.getHeight() / 2 - 24,
+      love.graphics.getWidth(), 'center')
+
     for i = 1, #enemies, 1 do
       enemies[i]:draw()
     end

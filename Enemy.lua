@@ -1,6 +1,6 @@
 local love = require("love")
 
-local Enemy = function()
+local Enemy = function(_lvl)
   local _dice, _x, _y, _radius = 0, 0, 0, 20
 
   _dice = math.random(1, 4)
@@ -20,7 +20,7 @@ local Enemy = function()
   end
 
   return {
-    level = 1,
+    level = _lvl or 1,
     radius = _radius,
     x = _x,
     y = _y,
