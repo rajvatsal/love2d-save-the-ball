@@ -4,13 +4,13 @@ local button = require('Button')
 
 math.randomseed(os.time())
 
-local player          = {
+local player       = {
   radius = 20,
   x = 30,
   y = 30,
 }
 
-local game            = {
+local game         = {
   dificulty = 1,
   state = {
     menu = true,
@@ -20,29 +20,28 @@ local game            = {
   },
   points = 0,
   levels = { 10, 20, 30, 40 },
+  changeState = function(self, state)
+    self.state['running'] = state == 'running'
+    self.state['menu'] = state == 'menu'
+    self.state['pause'] = state == 'pause'
+    self.state['ended'] = state == 'ended'
+  end,
 }
 
-local buttons         = {
+local buttons      = {
   menu_state = {}
 }
 
-local enemies         = {}
+local enemies      = {}
 
-local changeGameState = function(state)
-  game.state['running'] = state == 'running'
-  game.state['menu'] = state == 'menu'
-  game.state['pause'] = state == 'pause'
-  game.state['ended'] = state == 'ended'
-end
-
-local startNewGame    = function()
-  changeGameState('running')
+local startNewGame = function()
+  game:changeState('running')
   game.points = 0
 
   enemies = { enemy(1) }
 end
 
-love.load             = function()
+love.load          = function()
   love.mouse.setVisible(false)
   table.insert(enemies, 1, enemy())
 
@@ -51,7 +50,7 @@ love.load             = function()
   buttons.menu_state.exit_game = button('Exit Game', love.event.quit, nil, 120, 40)
 end
 
-love.mousepressed     = function(x, y, btn)
+love.mousepressed  = function(x, y, btn)
   if game.state['running'] then return end
   if game.state['menu'] then
     if btn == 1 then
@@ -62,20 +61,20 @@ love.mousepressed     = function(x, y, btn)
   end
 end
 
-love.update           = function(dt)
+love.update        = function(dt)
   player.x, player.y = love.mouse.getPosition()
   if game.state['running'] then
     for i = 1, #enemies, 1 do
       enemies[i]:move(player.x, player.y)
       if enemies[i]:checkTouched(player.x, player.y, player.radius) then
-        changeGameState('menu')
+        game:changeState('menu')
       end
     end
     game.points = game.points + dt
   end
 end
 
-love.draw             = function()
+love.draw          = function()
   love.graphics.printf(love.timer.getFPS(), love.graphics.newFont(14), 10,
     love.graphics.getHeight() - 30, love.graphics.getWidth())
 
