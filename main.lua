@@ -19,7 +19,7 @@ local game         = {
     ended = false,
   },
   points = 0,
-  levels = { 10, 20, 30, 40 },
+  levels = { 15, 30, 45, 60, 75, 90, 105, 120 },
   changeState = function(self, state)
     self.state['running'] = state == 'running'
     self.state['menu'] = state == 'menu'
@@ -65,8 +65,16 @@ love.update        = function(dt)
   player.x, player.y = love.mouse.getPosition()
   if game.state['running'] then
     for i = 1, #enemies, 1 do
-      enemies[i]:move(player.x, player.y)
-      if enemies[i]:checkTouched(player.x, player.y, player.radius) then
+      if not enemies[i]:checkTouched(player.x, player.y, player.radius) then
+        enemies[i]:move(player.x, player.y)
+
+        for j = 1, #game.levels do
+          if math.floor(game.points) == game.levels[j] then
+            table.insert(enemies, 1, enemy(game.dificulty * (j + 1)))
+            game.points = game.points + 5
+          end
+        end
+      else
         game:changeState('menu')
       end
     end
