@@ -13,13 +13,12 @@ local Button = function(text, func, func_param, width, height)
     text_y = 12,
 
     checkPressed = function(self, mouse_x, mouse_y, mouse_radius)
-      print('MOUSE X-Axis: ' .. mouse_x)
       if mouse_x + mouse_radius >= self.button_x and mouse_x - mouse_radius <= self.width + self.button_x then
         if mouse_y + mouse_radius >= self.button_y and mouse_y - mouse_radius <= self.height + self.button_y then
           if self.func_param then
-            self:func(self.func_param)
+            self.func(self.func_param)
           else
-            self:func()
+            self.func()
           end
         end
       end
