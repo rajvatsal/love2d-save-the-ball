@@ -30,8 +30,8 @@ local game         = {
 
 local fonts = {
   medium = {
-    font = love.graphics.newFont(16),
-    size = 16,
+    font = love.graphics.newFont(14),
+    size = 14,
   },
   large = {
     font = love.graphics.newFont(24),
