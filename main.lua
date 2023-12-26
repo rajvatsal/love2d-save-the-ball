@@ -98,6 +98,7 @@ love.update        = function(dt)
 end
 
 love.draw          = function()
+  love.graphics.setFont(fonts.medium.font)
   love.graphics.printf(love.timer.getFPS(), fonts.medium.font, 10,
     love.graphics.getHeight() - 30, love.graphics.getWidth())
 
