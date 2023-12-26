@@ -28,6 +28,21 @@ local game         = {
   end,
 }
 
+local fonts = {
+  medium = {
+    font = love.graphics.newFont(16),
+    size = 16,
+  },
+  large = {
+    font = love.graphics.newFont(24),
+    size = 24,
+  },
+  massive = {
+    font = love.graphics.newFont(60),
+    size = 60,
+  }
+}
+
 local buttons      = {
   menu_state = {}
 }
@@ -83,11 +98,11 @@ love.update        = function(dt)
 end
 
 love.draw          = function()
-  love.graphics.printf(love.timer.getFPS(), love.graphics.newFont(14), 10,
+  love.graphics.printf(love.timer.getFPS(), fonts.medium.font, 10,
     love.graphics.getHeight() - 30, love.graphics.getWidth())
 
   if game.state['running'] then
-    love.graphics.printf(math.floor(game.points), love.graphics.newFont(24), 0, 10, love.graphics.getWidth(), 'center')
+    love.graphics.printf(math.floor(game.points), fonts.large.font, 0, 10, love.graphics.getWidth(), 'center')
 
     for i = 1, #enemies, 1 do
       enemies[i]:draw()
