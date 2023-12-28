@@ -20,6 +20,23 @@ local game         = {
   },
   points = 0,
   levels = { 15, 30, 45, 60, 75, 90, 105, 120 },
+  running = function(self, enemies, dt)
+    for i = 1, #enemies, 1 do
+      if not enemies[i]:checkTouched(player.x, player.y, player.radius) then
+        enemies[i]:move(player.x, player.y)
+
+        for j = 1, #self.levels do
+          if math.floor(self.points) == self.levels[j] then
+            table.insert(enemies, 1, enemy(self.dificulty * (j + 1)))
+            self.points = self.points + 5
+          end
+        end
+      else
+        changeGameState('ended')
+      end
+    end
+    self.points = self.points + dt
+  end
 }
 
 changeGameState = function(state)
@@ -88,24 +105,16 @@ love.mousepressed  = function(x, y, btn)
   end
 end
 
+love.keypressed = function(key)
+  if key == 'escape' then
+    changeGameState('paused')
+  end
+end
+
 love.update        = function(dt)
   player.x, player.y = love.mouse.getPosition()
   if game.state['running'] then
-    for i = 1, #enemies, 1 do
-      if not enemies[i]:checkTouched(player.x, player.y, player.radius) then
-        enemies[i]:move(player.x, player.y)
-
-        for j = 1, #game.levels do
-          if math.floor(game.points) == game.levels[j] then
-            table.insert(enemies, 1, enemy(game.dificulty * (j + 1)))
-            game.points = game.points + 5
-          end
-        end
-      else
-        changeGameState('ended')
-      end
-    end
-    game.points = game.points + dt
+    game:running(enemies, dt)
   end
 end
 
