@@ -30,7 +30,8 @@ local Button = function(text, func, func_param, width, height)
 
       if text_x then
         self.text_x = text_x
-      elseif text_y then
+      end
+      if text_y then
         self.text_y = text_y
       end
 

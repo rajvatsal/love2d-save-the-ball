@@ -39,14 +39,14 @@ local game         = {
   end
 }
 
-changeGameState = function(state)
+changeGameState    = function(state)
   game.state['running'] = state == 'running'
   game.state['menu'] = state == 'menu'
   game.state['pause'] = state == 'pause'
   game.state['ended'] = state == 'ended'
 end
 
-local fonts = {
+local fonts        = {
   medium = {
     font = love.graphics.newFont(14),
     size = 14,
@@ -63,7 +63,8 @@ local fonts = {
 
 local buttons      = {
   menu_state = {},
-  ended_state = {}
+  ended_state = {},
+  pause_state = {},
 }
 
 local enemies      = {}
@@ -86,6 +87,10 @@ love.load          = function()
   buttons.ended_state.replay_game = button('Replay', startNewGame, nil, 100, 50)
   buttons.ended_state.menu = button('Menu', changeGameState, 'menu', 100, 50)
   buttons.ended_state.exit_game = button('Quit', love.event.quit, nil, 100, 50)
+
+  buttons.pause_state.continue_game = button('Continue', changeGameState, 'running', 100, 50)
+  buttons.pause_state.menu = button('Menu', changeGameState, 'menu', 100, 50)
+  buttons.pause_state.exit_game = button('Quit', love.event.quit, nil, 100, 50)
 end
 
 love.mousepressed  = function(x, y, btn)
@@ -102,12 +107,22 @@ love.mousepressed  = function(x, y, btn)
         buttons.ended_state[index]:checkPressed(x, y, player.radius / 2)
       end
     end
+  elseif game.state['pause'] then
+    if btn == 1 then
+      for index in pairs(buttons.pause_state) do
+        buttons.pause_state[index]:checkPressed(x, y, player.radius / 2)
+      end
+    end
   end
 end
 
-love.keypressed = function(key)
+love.keypressed    = function(key)
   if key == 'escape' then
-    changeGameState('paused')
+    if game.state['pause'] then
+      changeGameState('running')
+    else
+      changeGameState('pause')
+    end
   end
 end
 
@@ -134,13 +149,21 @@ love.draw          = function()
     buttons.menu_state.settings:draw(nil, 70)
     buttons.menu_state.exit_game:draw(nil, 125)
   elseif game.state['ended'] then
-    love.graphics.setFont(fonts.large.font)
+    buttons.ended_state.replay_game:draw(love.graphics.getWidth() / 2.15, love.graphics.getHeight() / 1.8, 22.5, 16.5)
+    buttons.ended_state.menu:draw(love.graphics.getWidth() / 2.15, love.graphics.getHeight() / 1.53, 29.5, 16.5)
+    buttons.ended_state.exit_game:draw(love.graphics.getWidth() / 2.15, love.graphics.getHeight() / 1.33, 32.5, 16.5)
 
-    buttons.ended_state.replay_game:draw(love.graphics.getWidth() / 2.15, love.graphics.getHeight() /  1.8, 9, 10)
-    buttons.ended_state.menu:draw(love.graphics.getWidth() / 2.15, love.graphics.getHeight() / 1.53, 17, 10)
-    buttons.ended_state.exit_game:draw(love.graphics.getWidth() / 2.15, love.graphics.getHeight() /  1.33, 22, 10)
+    love.graphics.printf(math.floor(game.points), fonts.massive.font, 0,
+      love.graphics.getHeight() / 2 - fonts.massive.size, love.graphics.getWidth(), 'center')
+  end
 
-    love.graphics.printf(math.floor(game.points), fonts.massive.font, 0, love.graphics.getHeight() / 2 - fonts.massive.size, love.graphics.getWidth(), 'center')
+  if game.state['pause'] then
+    buttons.pause_state.continue_game:draw(love.graphics.getWidth() / 2.15, love.graphics.getHeight() / 1.8, 16.5, 16.5)
+    buttons.pause_state.menu:draw(love.graphics.getWidth() / 2.15, love.graphics.getHeight() / 1.53, 29.5, 16.5)
+    buttons.pause_state.exit_game:draw(love.graphics.getWidth() / 2.15, love.graphics.getHeight() / 1.33, 32.5, 16.5)
+
+    love.graphics.printf('paused', fonts.massive.font, 0, love.graphics.getHeight() / 2 - fonts.massive.size,
+      love.graphics.getWidth(), 'center')
   end
 
   if not game.state['running'] then
