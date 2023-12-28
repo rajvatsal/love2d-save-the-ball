@@ -120,7 +120,7 @@ love.keypressed    = function(key)
   if key == 'escape' then
     if game.state['pause'] then
       changeGameState('running')
-    else
+    elseif game.state['running'] then
       changeGameState('pause')
     end
   end
